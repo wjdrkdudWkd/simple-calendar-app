@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_calendar_app/category/category_drop_down.dart';
 import 'package:simple_calendar_app/common/botton_navigator.dart';
 import 'package:simple_calendar_app/common/common_app_bar.dart';
 import 'app_database.dart';
@@ -166,19 +167,26 @@ class _HomePageState extends State<HomePage> {
       //     ),
       //   ],
       // ),
-      appBar: CommonAppBar(
-        title: DropdownButton<String>(
-          value: 'Categories',
-          items: <String>['Categories', 'Favorites', 'All']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {},
-        ),
-        actions: const [
+      // appBar: CommonAppBar(
+      //   title: DropdownButton<String>(
+      //     value: 'Categories',
+      //     items: <String>['Categories', 'Favorites', 'All']
+      //         .map<DropdownMenuItem<String>>((String value) {
+      //       return DropdownMenuItem<String>(
+      //         value: value,
+      //         child: Text(value),
+      //       );
+      //     }).toList(),
+      //     onChanged: (String? newValue) {},
+      //   ),
+      //   actions: const [
+      //     Icon(Icons.notifications),
+      //     Icon(Icons.settings),
+      //   ],
+      // ),
+      appBar: const CommonAppBar(
+        title: CategoryDropdown(),
+        actions: [
           Icon(Icons.notifications),
           Icon(Icons.settings),
         ],

@@ -6,10 +6,18 @@ import 'package:uuid/uuid.dart';
 class CategoryProvider extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
   List<Categories> _categories = [];
+  String? _selectedCategoryId;
   bool _isLoading = false;
 
   List<Categories> get categories => _categories;
+  String? get selectedCategoryId => _selectedCategoryId;
   bool get isLoading => _isLoading;
+
+  // 선택된 카테고리 ID 업데이트
+  void updateSelectedCategory(String? categoryId) {
+    _selectedCategoryId = categoryId;
+    notifyListeners();
+  }
 
   Future<void> loadCategories() async {
     _isLoading = true;

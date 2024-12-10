@@ -29,7 +29,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CategoryProvider(),
+      create: (_) {
+        final provider = CategoryProvider();
+        // 앱 시작 시 카테고리 로드
+        provider.loadCategories();
+        return provider;
+      },
       child: MaterialApp(
         title: 'Calendar App',
         theme: ThemeData(
