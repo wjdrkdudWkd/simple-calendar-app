@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_calendar_app/services/botton_navigator.dart';
+import 'package:simple_calendar_app/common/botton_navigator.dart';
+import 'package:simple_calendar_app/common/common_app_bar.dart';
 import 'app_database.dart';
 import 'screens/category_screen.dart';
 
@@ -134,19 +135,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Today', style: theme.textTheme.titleLarge),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text('Today', style: theme.textTheme.titleLarge),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.notifications),
+      //       onPressed: () {},
+      //     ),
+      //     IconButton(
+      //       icon: const Icon(Icons.settings),
+      //       onPressed: () {},
+      //     ),
+      //   ],
+      // ),
 
       // AppBar(
       //   title: Text(
@@ -165,6 +166,23 @@ class _HomePageState extends State<HomePage> {
       //     ),
       //   ],
       // ),
+      appBar: CommonAppBar(
+        title: DropdownButton<String>(
+          value: 'Categories',
+          items: <String>['Categories', 'Favorites', 'All']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {},
+        ),
+        actions: const [
+          Icon(Icons.notifications),
+          Icon(Icons.settings),
+        ],
+      ),
       body: Column(
         children: [
           _buildCalendar(),

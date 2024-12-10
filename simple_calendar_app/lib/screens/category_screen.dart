@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_calendar_app/services/botton_navigator.dart';
+import 'package:simple_calendar_app/common/botton_navigator.dart';
+import 'package:simple_calendar_app/common/common_app_bar.dart';
 import '../providers/category_provider.dart';
 import '../widgets/category_list_item.dart';
 
@@ -23,12 +24,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CommonAppBar(
+        title: Text(
+          'Calendar Categories',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          Icon(Icons.notifications),
+          Icon(Icons.settings),
+        ],
+      ),
       backgroundColor: const Color(0xFF1A1B1E),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildHeader(),
+            // _buildHeader(),
             const SizedBox(height: 20),
             _buildCategoryList(),
           ],
