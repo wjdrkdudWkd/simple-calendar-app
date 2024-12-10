@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 import '../models/category_model.dart';
 import '../services/database_service.dart';
+import 'package:uuid/uuid.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
-  List<Category> _categories = [];
+  List<Categories> _categories = [];
   bool _isLoading = false;
 
-  List<Category> get categories => _categories;
+  List<Categories> get categories => _categories;
   bool get isLoading => _isLoading;
 
   Future<void> loadCategories() async {
@@ -30,7 +30,7 @@ class CategoryProvider extends ChangeNotifier {
     required String description,
     required String iconName,
   }) async {
-    final category = Category(
+    final category = Categories(
       id: const Uuid().v4(),
       name: name,
       description: description,
@@ -46,7 +46,7 @@ class CategoryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> toggleCategory(Category category) async {
+  Future<void> toggleCategory(Categories category) async {
     try {
       category.isEnabled = !category.isEnabled;
       await _databaseService.updateCategory(category);

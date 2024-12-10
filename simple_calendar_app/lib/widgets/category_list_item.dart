@@ -4,9 +4,9 @@ import '../models/category_model.dart';
 import '../providers/category_provider.dart';
 
 class CategoryListItem extends StatelessWidget {
-  final Category category;
+  final Categories category;
 
-  const CategoryListItem({Key? key, required this.category}) : super(key: key);
+  const CategoryListItem({super.key, required this.category});
 
   IconData _getIconData(String iconName) {
     // 아이콘 이름을 IconData로 변환하는 매핑
@@ -24,30 +24,30 @@ class CategoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Color(0xFF2A2B2E),
+        color: const Color(0xFF2A2B2E),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
         leading: Icon(
           _getIconData(category.iconName),
-          color: Color(0xFFE91E63),
+          color: const Color(0xFFE91E63),
         ),
         title: Text(
           category.name,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         subtitle: Text(
           category.description,
-          style: TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey),
         ),
         trailing: Switch(
           value: category.isEnabled,
           onChanged: (value) {
             context.read<CategoryProvider>().toggleCategory(category);
           },
-          activeColor: Color(0xFFE91E63),
+          activeColor: const Color(0xFFE91E63),
         ),
       ),
     );

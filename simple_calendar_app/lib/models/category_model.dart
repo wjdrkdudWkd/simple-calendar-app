@@ -1,11 +1,11 @@
-class Category {
+class Categories {
   final String id;
   final String name;
   final String description;
   final String iconName;
   bool isEnabled;
 
-  Category({
+  Categories({
     required this.id,
     required this.name,
     required this.description,
@@ -23,8 +23,8 @@ class Category {
     };
   }
 
-  factory Category.fromMap(Map<String, dynamic> map) {
-    return Category(
+  factory Categories.fromMap(Map<String, dynamic> map) {
+    return Categories(
       id: map['id'],
       name: map['name'],
       description: map['description'],

@@ -32,7 +32,7 @@ class DatabaseService {
     ''');
   }
 
-  Future<void> insertCategory(Category category) async {
+  Future<void> insertCategory(Categories category) async {
     final db = await database;
     await db.insert(
       'category',
@@ -41,13 +41,13 @@ class DatabaseService {
     );
   }
 
-  Future<List<Category>> getCategories() async {
+  Future<List<Categories>> getCategories() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('category');
-    return List.generate(maps.length, (i) => Category.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => Categories.fromMap(maps[i]));
   }
 
-  Future<void> updateCategory(Category category) async {
+  Future<void> updateCategory(Categories category) async {
     final db = await database;
     await db.update(
       'category',

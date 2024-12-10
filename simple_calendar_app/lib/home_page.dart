@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_calendar_app/services/botton_navigator.dart';
 import 'app_database.dart';
+import 'screens/category_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -169,28 +171,38 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: _buildEventList()),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Today',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
-            label: 'Schedule',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.task),
-            label: 'Tasks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: Colors.pink,
-        unselectedItemColor: Colors.grey,
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: 0,
+      //   onTap: (index) {
+      //     if (index == 1) {
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(builder: (context) => const CategoryScreen()),
+      //       );
+      //     }
+      //   },
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.calendar_today),
+      //       label: 'Today',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.schedule),
+      //       label: 'Schedule',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.task),
+      //       label: 'Tasks',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      //   selectedItemColor: Colors.pink,
+      //   unselectedItemColor: Colors.grey,
+      // ),
+      bottomNavigationBar: const BottomNavigator(currentIndex: 0),
       floatingActionButton: FloatingActionButton(
         onPressed: _addEvent,
         child: const Icon(Icons.add),
