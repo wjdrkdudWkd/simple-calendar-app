@@ -10,7 +10,7 @@ class CategoryDropdown extends StatelessWidget {
     return Consumer<CategoryProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading) {
-          return const CircularProgressIndicator();
+          return const CircularProgressIndicator(); // fdsf
         }
 
         // 'All' 옵션을 포함한 드롭다운 아이템 생성
