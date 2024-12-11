@@ -38,14 +38,21 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Calendar App',
         theme: ThemeData(
-          primarySwatch: Colors.teal,
-          scaffoldBackgroundColor: Colors.grey[100],
+          primarySwatch: Colors.pink,
+          scaffoldBackgroundColor: const Color(0xFF1A1B1E),
+          // scaffoldBackgroundColor: Colors.grey[100],
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.teal,
+            // backgroundColor: Colors.teal,
+            backgroundColor: Color(0xFF1A1B1E),
             foregroundColor: Colors.white,
           ),
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(color: Colors.white),
+            bodyMedium: TextStyle(color: Colors.white),
+          ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Colors.teal,
+            // backgroundColor: Colors.teal,
+            backgroundColor: Colors.pink,
           ),
         ),
         home: const HomePage(),

@@ -135,6 +135,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final formattedDate = DateFormat('MMMM d, yyyy').format(_selectedDate);
     return Scaffold(
       // appBar: AppBar(
       //   title: Text('Today', style: theme.textTheme.titleLarge),
@@ -191,11 +192,46 @@ class _HomePageState extends State<HomePage> {
           Icon(Icons.settings),
         ],
       ),
-      body: Column(
-        children: [
-          _buildCalendar(),
-          Expanded(child: _buildEventList()),
-        ],
+      // body: Column(
+      //   children: [
+      //     _buildCalendar(),
+      //     Expanded(child: _buildEventList()),
+      //   ],
+      // ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              formattedDate,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search schedules...',
+                hintStyle: theme.textTheme.bodyMedium,
+                filled: true,
+                fillColor: Colors.grey[800],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: const Icon(Icons.search, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildCategoryChips(),
+            const SizedBox(height: 10),
+            _buildCalendar(),
+            const SizedBox(height: 10),
+            Expanded(child: _buildEventList()),
+          ],
+        ),
       ),
       // bottomNavigationBar: BottomNavigationBar(
       //   currentIndex: 0,
@@ -236,15 +272,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildCategoryChips() {
+    final categories = ['All', 'Work', 'Personal', 'Family'];
+    return Wrap(
+      spacing: 8.0,
+      children: categories.map((category) {
+        return Chip(
+          label: Text(category),
+          backgroundColor: Colors.pink,
+          labelStyle: const TextStyle(color: Colors.white),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildCalendar() {
-    final days = ['일', '월', '화', '수', '목', '금', '토'];
-    final firstDayOfMonth = DateTime(_focusedDate.year, _focusedDate.month, 1);
+    final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final firstDayOfMonth =
+        DateTime(_selectedDate.year, _selectedDate.month, 1);
     final lastDayOfMonth =
-        DateTime(_focusedDate.year, _focusedDate.month + 1, 0);
+        DateTime(_selectedDate.year, _selectedDate.month + 1, 0);
 
     final daysInMonth = List.generate(
       lastDayOfMonth.day,
-      (index) => DateTime(_focusedDate.year, _focusedDate.month, index + 1),
+      (index) => DateTime(_selectedDate.year, _selectedDate.month, index + 1),
     );
 
     return Column(
@@ -253,7 +304,8 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: days
               .map((day) => Text(day,
-                  style: const TextStyle(fontWeight: FontWeight.bold)))
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)))
               .toList(),
         ),
         GridView.builder(
@@ -265,7 +317,7 @@ class _HomePageState extends State<HomePage> {
           ),
           itemBuilder: (context, index) {
             final day = daysInMonth[index];
-            final isSelected = _selectedDate == day;
+            final isSelected = day.day == _selectedDate.day;
 
             return GestureDetector(
               onTap: () {
@@ -278,13 +330,13 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.center,
                 margin: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.teal : Colors.grey[200],
+                  color: isSelected ? Colors.pink : Colors.grey[800],
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   '${day.day}',
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
+                    color: isSelected ? Colors.white : Colors.grey[400],
                   ),
                 ),
               ),
@@ -297,21 +349,31 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildEventList() {
     return ListView.builder(
-      controller: _scrollController,
-      itemCount: _events.length + 1,
+      itemCount: _events.length,
       itemBuilder: (context, index) {
-        if (index == _events.length) {
-          return _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : const SizedBox();
-        }
-
         final event = _events[index];
         return Card(
-          margin: const EdgeInsets.all(8),
+          color: Colors.grey[850],
+          margin: const EdgeInsets.symmetric(vertical: 8),
           child: ListTile(
-            title: Text(event['title']),
-            subtitle: Text("${event['time']} @ ${event['location']}"),
+            contentPadding: const EdgeInsets.all(16),
+            title: Text(
+              event['time'],
+              style: const TextStyle(
+                  color: Colors.pink, fontWeight: FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(event['title'],
+                    style: const TextStyle(color: Colors.white, fontSize: 16)),
+                const SizedBox(height: 4),
+                Text(event['location'],
+                    style: const TextStyle(color: Colors.grey)),
+              ],
+            ),
+            trailing: Text(event['duration'],
+                style: const TextStyle(color: Colors.grey)),
           ),
         );
       },
