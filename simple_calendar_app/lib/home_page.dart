@@ -79,48 +79,161 @@ class _HomePageState extends State<HomePage> {
     await showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('이벤트 추가'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: '제목'),
-              ),
-              TextField(
-                controller: timeController,
-                decoration: const InputDecoration(labelText: '시간'),
-              ),
-              TextField(
-                controller: locationController,
-                decoration: const InputDecoration(labelText: '위치'),
-              ),
-            ],
+        return Dialog(
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('취소'),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.event_note,
+                          color: Colors.pink,
+                          size: 24,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'New Event',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: titleController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon: const Icon(Icons.title, color: Colors.pink),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[700]!),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(color: Colors.pink),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[850],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: timeController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Time',
+                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon:
+                        const Icon(Icons.access_time, color: Colors.pink),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[700]!),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(color: Colors.pink),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[850],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: locationController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Location',
+                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon:
+                        const Icon(Icons.location_on, color: Colors.pink),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[700]!),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(color: Colors.pink),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[850],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.close, color: Colors.grey[400]),
+                      label: Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.grey[400]),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        final db = AppDatabase.instance;
+                        final dateString =
+                            DateFormat('yyyy-MM-dd').format(_selectedDate);
+                        await db.insertEvent({
+                          'date': dateString,
+                          'title': titleController.text,
+                          'time': timeController.text,
+                          'location': locationController.text,
+                          'duration': timeController.text,
+                        });
+                        Navigator.pop(context);
+                        _loadEvents();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'Add Event',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () async {
-                final db = AppDatabase.instance;
-                final dateString =
-                    DateFormat('yyyy-MM-dd').format(_selectedDate);
-                await db.insertEvent({
-                  'date': dateString,
-                  'title': titleController.text,
-                  'time': timeController.text,
-                  'location': locationController.text,
-                  'duration': timeController.text,
-                });
-                Navigator.pop(context);
-                _loadEvents();
-              },
-              child: const Text('추가'),
-            ),
-          ],
+          ),
         );
       },
     );
