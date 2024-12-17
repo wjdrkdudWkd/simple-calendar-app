@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_calendar_app/common/main_layout.dart';
 import 'package:simple_calendar_app/providers/category_provider.dart';
-import 'package:simple_calendar_app/screens/category_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'home_page.dart';
 import 'app_database.dart';
 
 void main() async {
@@ -44,6 +43,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             // backgroundColor: Colors.teal,
             backgroundColor: Color(0xFF1A1B1E),
+            // backgroundColor: Colors.white,
             foregroundColor: Colors.white,
           ),
           textTheme: const TextTheme(
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.pink,
           ),
         ),
-        home: const HomePage(),
+        home: const MainLayout(),
         debugShowCheckedModeBanner: false,
       ),
     );

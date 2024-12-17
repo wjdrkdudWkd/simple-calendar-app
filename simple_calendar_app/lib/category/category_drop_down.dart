@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/category_provider.dart';
+import '../models/category_item.dart';
 
 class CategoryDropdown extends StatelessWidget {
   const CategoryDropdown({super.key});
@@ -9,57 +10,50 @@ class CategoryDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CategoryProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return const CircularProgressIndicator(); // fdsf
-        }
-
-        // 'All' 옵션을 포함한 드롭다운 아이템 생성
-        final dropdownItems = [
-          DropdownMenuItem<String>(
-            value: null,
-            child: Text(
-              'All Categories',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).appBarTheme.foregroundColor,
-              ),
-            ),
-          ),
-          ...provider.categories.map((category) {
-            return DropdownMenuItem<String>(
-              value: category.id,
-              child: Text(
-                category.name,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).appBarTheme.foregroundColor,
-                ),
+        return DropdownButton<CategoryItem>(
+          dropdownColor: Colors.grey[850],
+          underline: Container(),
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+          items: provider.categories.map((category) {
+            return DropdownMenuItem<CategoryItem>(
+              value: category,
+              child: Row(
+                children: [
+                  Icon(
+                    _getIconData(category.iconName),
+                    color: Colors.pink,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    category.name,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
             );
-          }),
-        ];
-
-        return DropdownButton<String>(
-          value: provider.selectedCategoryId,
-          items: dropdownItems,
-          onChanged: (String? newValue) {
-            provider.updateSelectedCategory(newValue);
-            // TODO: 여기서 선택된 카테고리에 따른 이벤트 필터링 로직 추가
+          }).toList(),
+          onChanged: (CategoryItem? category) {
+            if (category != null && category.id != null) {
+              provider.toggleCategorySelection(category.id!);
+            }
           },
-          underline: Container(), // 밑줄 제거
-          icon: const Icon(Icons.arrow_drop_down),
-          iconSize: 24,
-          elevation: 16,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).appBarTheme.foregroundColor,
-          ),
-          dropdownColor: Theme.of(context).appBarTheme.backgroundColor,
         );
       },
     );
+  }
+
+  IconData _getIconData(String iconName) {
+    switch (iconName) {
+      case 'work':
+        return Icons.work;
+      case 'study':
+        return Icons.book;
+      case 'fitness':
+        return Icons.fitness_center;
+      case 'finance':
+        return Icons.attach_money;
+      default:
+        return Icons.category;
+    }
   }
 }

@@ -249,139 +249,71 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final formattedDate = DateFormat('MMMM d, yyyy').format(_selectedDate);
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Today', style: theme.textTheme.titleLarge),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.notifications),
-      //       onPressed: () {},
-      //     ),
-      //     IconButton(
-      //       icon: const Icon(Icons.settings),
-      //       onPressed: () {},
-      //     ),
-      //   ],
-      // ),
+    final screenHeight = MediaQuery.of(context).size.height;
+    final appBarHeight = screenHeight * 0.1; // AppBar 높���를 화면 높이의 8%로 설정
+    final searchBarHeight = screenHeight * 0.06; // 검색바 높이를 6%로 설정
+    final calendarHeight = screenHeight * 0.35; // 캘린더 높이를 35%로 설정
 
-      // AppBar(
-      //   title: Text(
-      //     DateFormat('yyyy년 MM월').format(_focusedDate),
-      //     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      //   ),
-      //   centerTitle: true,
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.arrow_back),
-      //       onPressed: () => _changeMonth(-1),
-      //     ),
-      //     IconButton(
-      //       icon: const Icon(Icons.arrow_forward),
-      //       onPressed: () => _changeMonth(1),
-      //     ),
-      //   ],
-      // ),
-      // appBar: CommonAppBar(
-      //   title: DropdownButton<String>(
-      //     value: 'Categories',
-      //     items: <String>['Categories', 'Favorites', 'All']
-      //         .map<DropdownMenuItem<String>>((String value) {
-      //       return DropdownMenuItem<String>(
-      //         value: value,
-      //         child: Text(value),
-      //       );
-      //     }).toList(),
-      //     onChanged: (String? newValue) {},
-      //   ),
-      //   actions: const [
-      //     Icon(Icons.notifications),
-      //     Icon(Icons.settings),
-      //   ],
-      // ),
-      appBar: const CommonAppBar(
-        title: CategoryDropdown(),
-        actions: [
-          Icon(Icons.notifications),
-          Icon(Icons.settings),
-        ],
-      ),
-      // body: Column(
-      //   children: [
-      //     _buildCalendar(),
-      //     Expanded(child: _buildEventList()),
-      //   ],
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              formattedDate,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search schedules...',
-                hintStyle: theme.textTheme.bodyMedium,
-                filled: true,
-                fillColor: Colors.grey[800],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                prefixIcon: const Icon(Icons.search, color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildCategoryChips(),
-            const SizedBox(height: 10),
-            _buildCalendar(),
-            const SizedBox(height: 10),
-            Expanded(child: _buildEventList()),
-          ],
+    return Column(
+      children: [
+        SizedBox(
+          height: appBarHeight,
+          child: const CommonAppBar(
+            title: CategoryDropdown(),
+            actions: [
+              Icon(Icons.notifications),
+              Icon(Icons.settings),
+            ],
+          ),
         ),
-      ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 0,
-      //   onTap: (index) {
-      //     if (index == 1) {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(builder: (context) => const CategoryScreen()),
-      //       );
-      //     }
-      //   },
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.calendar_today),
-      //       label: 'Today',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.schedule),
-      //       label: 'Schedule',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.task),
-      //       label: 'Tasks',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Profile',
-      //     ),
-      //   ],
-      //   selectedItemColor: Colors.pink,
-      //   unselectedItemColor: Colors.grey,
-      // ),
-      bottomNavigationBar: const BottomNavigator(currentIndex: 0),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addEvent,
-        child: const Icon(Icons.add),
-      ),
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  SizedBox(
+                    height: searchBarHeight,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search schedules...',
+                        hintStyle: theme.textTheme.bodyMedium,
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon:
+                            const Icon(Icons.search, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  _buildCategoryChips(),
+                  SizedBox(height: screenHeight * 0.01),
+                  SizedBox(
+                    // height: calendarHeight,
+                    child: _buildCalendar(),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  _buildEventList(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -461,32 +393,41 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildEventList() {
-    return ListView.builder(
-      itemCount: _events.length,
-      itemBuilder: (context, index) {
-        final event = _events[index];
-        return Card(
-          color: Colors.grey[850],
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(16),
-            title: Text(
-              event['time'],
-              style: const TextStyle(
-                  color: Colors.pink, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(event['title'],
-                    style: const TextStyle(color: Colors.white, fontSize: 16)),
-                const SizedBox(height: 4),
-                Text(event['location'],
-                    style: const TextStyle(color: Colors.grey)),
-              ],
-            ),
-            trailing: Text(event['duration'],
-                style: const TextStyle(color: Colors.grey)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.4, // 화면 높이의 40%
+          child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: _events.length,
+            itemBuilder: (context, index) {
+              final event = _events[index];
+              return Card(
+                color: Colors.grey[850],
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16),
+                  title: Text(
+                    event['time'],
+                    style: const TextStyle(
+                        color: Colors.pink, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(event['title'],
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text(event['location'],
+                          style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  trailing: Text(event['duration'],
+                      style: const TextStyle(color: Colors.grey)),
+                ),
+              );
+            },
           ),
         );
       },

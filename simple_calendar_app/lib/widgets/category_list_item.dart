@@ -1,38 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/category_model.dart';
-import '../providers/category_provider.dart';
+import '../models/category_item.dart';
 
 class CategoryListItem extends StatelessWidget {
-  final Categories category;
+  final CategoryItem category;
+  final VoidCallback? onTap;
 
-  const CategoryListItem({super.key, required this.category});
-
-  IconData _getIconData(String iconName) {
-    // 아이콘 이름을 IconData로 변환하는 매핑
-    final iconMap = {
-      'fitness': Icons.fitness_center,
-      'study': Icons.book,
-      'work': Icons.work,
-      'finance': Icons.attach_money,
-      'meal': Icons.restaurant,
-      'health': Icons.favorite,
-    };
-    return iconMap[iconName] ?? Icons.category;
-  }
+  const CategoryListItem({
+    super.key,
+    required this.category,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2A2B2E),
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
+      color: Colors.grey[850],
       child: ListTile(
         leading: Icon(
           _getIconData(category.iconName),
-          color: const Color(0xFFE91E63),
+          color: Colors.pink,
         ),
         title: Text(
           category.name,
@@ -40,16 +26,31 @@ class CategoryListItem extends StatelessWidget {
         ),
         subtitle: Text(
           category.description,
-          style: const TextStyle(color: Colors.grey),
+          style: TextStyle(color: Colors.grey[400]),
         ),
         trailing: Switch(
-          value: category.isEnabled,
+          value: category.isSelected,
           onChanged: (value) {
-            context.read<CategoryProvider>().toggleCategory(category);
+            if (onTap != null) onTap!();
           },
-          activeColor: const Color(0xFFE91E63),
+          activeColor: Colors.pink,
         ),
       ),
     );
+  }
+
+  IconData _getIconData(String iconName) {
+    switch (iconName) {
+      case 'work':
+        return Icons.work;
+      case 'study':
+        return Icons.book;
+      case 'fitness':
+        return Icons.fitness_center;
+      case 'finance':
+        return Icons.attach_money;
+      default:
+        return Icons.category;
+    }
   }
 }

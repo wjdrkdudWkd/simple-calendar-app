@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_calendar_app/common/botton_navigator.dart';
 import 'package:simple_calendar_app/common/common_app_bar.dart';
 import '../providers/category_provider.dart';
 import '../widgets/category_list_item.dart';
@@ -23,54 +22,50 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final appBarHeight = screenHeight * 0.08;
+
     return Scaffold(
-      appBar: const CommonAppBar(
-        title: Text(
-          'Calendar Categories',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+      body: Column(
+        children: [
+          SizedBox(
+            height: appBarHeight,
+            child: const CommonAppBar(
+              title: Text(
+                'Calendar Categories',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              actions: [
+                Icon(Icons.notifications),
+                Icon(Icons.settings),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          Icon(Icons.notifications),
-          Icon(Icons.settings),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: screenHeight * 0.02),
+                    _buildCategoryList(),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
-      backgroundColor: const Color(0xFF1A1B1E),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // _buildHeader(),
-            const SizedBox(height: 20),
-            _buildCategoryList(),
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFFE91E63),
-        child: const Icon(Icons.add),
         onPressed: () => _showAddCategoryModal(context),
+        backgroundColor: Colors.pink,
+        child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: const BottomNavigator(currentIndex: 1),
-    );
-  }
-
-  Widget _buildHeader() {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Calendar Categories',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 
@@ -90,15 +85,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
           );
         }
 
-        return Expanded(
-          child: ListView.builder(
-            itemCount: provider.categories.length,
-            itemBuilder: (context, index) {
-              return CategoryListItem(
-                category: provider.categories[index],
-              );
-            },
-          ),
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: provider.categories.length,
+          itemBuilder: (context, index) {
+            final category = provider.categories[index];
+            return CategoryListItem(
+              category: category,
+              onTap: () {
+                provider.toggleCategorySelection(category.id!);
+              },
+            );
+          },
         );
       },
     );

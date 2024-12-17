@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/category_model.dart';
+import 'models/category_item.dart';
 
 class AppDatabase {
   static final AppDatabase instance = AppDatabase._init();
@@ -38,12 +38,12 @@ class AppDatabase {
       )
     ''');
     await db.execute('''
-      CREATE TABLE category(
-        id TEXT PRIMARY KEY,
-        name TEXT,
-        description TEXT,
-        iconName TEXT,
-        isEnabled INTEGER
+      CREATE TABLE categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        iconName TEXT NOT NULL,
+        isSelected INTEGER NOT NULL DEFAULT 0
       )
     ''');
   }
@@ -65,35 +65,34 @@ class AppDatabase {
     await db.insert('events', event);
   }
 
-  Future<void> insertCategory(Categories category) async {
+  Future<void> insertCategory(Map<String, dynamic> category) async {
     final db = await database;
     await db.insert(
-      'category',
-      category.toMap(),
+      'categories',
+      category,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Categories>> getCategories() async {
+  Future<List<Map<String, dynamic>>> getCategories() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('category');
-    return List.generate(maps.length, (i) => Categories.fromMap(maps[i]));
+    return await db.query('categories');
   }
 
-  Future<void> updateCategory(Categories category) async {
+  Future<void> updateCategory(int id, Map<String, dynamic> category) async {
     final db = await database;
     await db.update(
-      'category',
-      category.toMap(),
+      'categories',
+      category,
       where: 'id = ?',
-      whereArgs: [category.id],
+      whereArgs: [id],
     );
   }
 
-  Future<void> deleteCategory(String id) async {
+  Future<void> deleteCategory(int id) async {
     final db = await database;
     await db.delete(
-      'category',
+      'categories',
       where: 'id = ?',
       whereArgs: [id],
     );

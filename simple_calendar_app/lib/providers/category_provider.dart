@@ -1,36 +1,31 @@
 import 'package:flutter/foundation.dart';
-import '../models/category_model.dart';
-import '../services/database_service.dart';
-import 'package:uuid/uuid.dart';
+import '../app_database.dart';
+import '../models/category_item.dart';
 
 class CategoryProvider extends ChangeNotifier {
-  final DatabaseService _databaseService = DatabaseService();
-  List<Categories> _categories = [];
-  String? _selectedCategoryId;
+  List<CategoryItem> _categories = [];
   bool _isLoading = false;
 
-  List<Categories> get categories => _categories;
-  String? get selectedCategoryId => _selectedCategoryId;
+  List<CategoryItem> get categories => _categories;
   bool get isLoading => _isLoading;
-
-  // 선택된 카테고리 ID 업데이트
-  void updateSelectedCategory(String? categoryId) {
-    _selectedCategoryId = categoryId;
-    notifyListeners();
-  }
 
   Future<void> loadCategories() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _categories = await _databaseService.getCategories();
+      final db = AppDatabase.instance;
+      final result = await db.getCategories();
+      _categories = result
+          .map((item) => CategoryItem.fromMap(Map<String, dynamic>.from(item)))
+          .toList();
     } catch (e) {
       print('Error loading categories: $e');
+      _categories = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> addCategory({
@@ -38,37 +33,43 @@ class CategoryProvider extends ChangeNotifier {
     required String description,
     required String iconName,
   }) async {
-    final category = Categories(
-      id: const Uuid().v4(),
-      name: name,
-      description: description,
-      iconName: iconName,
-    );
-
     try {
-      await _databaseService.insertCategory(category);
-      _categories.add(category);
-      notifyListeners();
+      final category = CategoryItem(
+        name: name,
+        description: description,
+        iconName: iconName,
+      );
+
+      final db = AppDatabase.instance;
+      await db.insertCategory(category.toMap());
+      await loadCategories();
     } catch (e) {
       print('Error adding category: $e');
     }
   }
 
-  Future<void> toggleCategory(Categories category) async {
+  Future<void> toggleCategorySelection(int id) async {
     try {
-      category.isEnabled = !category.isEnabled;
-      await _databaseService.updateCategory(category);
-      notifyListeners();
+      final categoryIndex = _categories.indexWhere((c) => c.id == id);
+      if (categoryIndex != -1) {
+        final category = _categories[categoryIndex];
+        final updatedCategory =
+            category.copyWith(isSelected: !category.isSelected);
+
+        final db = AppDatabase.instance;
+        await db.updateCategory(id, updatedCategory.toMap());
+        await loadCategories();
+      }
     } catch (e) {
       print('Error toggling category: $e');
     }
   }
 
-  Future<void> deleteCategory(String id) async {
+  Future<void> deleteCategory(int id) async {
     try {
-      await _databaseService.deleteCategory(id);
-      _categories.removeWhere((category) => category.id == id);
-      notifyListeners();
+      final db = AppDatabase.instance;
+      await db.deleteCategory(id);
+      await loadCategories();
     } catch (e) {
       print('Error deleting category: $e');
     }
